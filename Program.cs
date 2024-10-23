@@ -15,6 +15,18 @@ public class Program
 
         var app = builder.Build();
 
+        using var scope = app.Services.CreateScope();
+        using var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        DbContextInitializer.InitializeDbContext(appDbContext);
+
+        app.UseMvc();
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.UseSwagger();
+        app.UseSwaggerUI();
+
         app.MapGet("/", () => "Hello World!");
         app.MapHealthChecks("health-check");
 
@@ -24,10 +36,14 @@ public class Program
     private static void ConfigureServices(IServiceCollection services)
     {
         services.AddHealthChecks();
-        services.AddIdentity<ApplicationUser, ApplicationRole>()
-            .AddEntityFrameworkStores<AppDbContext>()
-            .AddDefaultTokenProviders();
+        services.AddSwaggerGen();
+        services.AddMediatR(o => o.RegisterServicesFromAssembly(typeof(Program).Assembly));
+        services.AddAuthentication();
+        services.AddAuthorization();
+        services.AddMvcCore(o => o.EnableEndpointRouting = false)
+            .AddApiExplorer();
 
-        DbContextInitializer.InitializeDbContext(services);
+        IdentityInitializer.AddIdentity(services);
+        DbContextInitializer.AddAppDbContext(services);
     }
 }
