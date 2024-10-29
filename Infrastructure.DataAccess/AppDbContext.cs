@@ -1,11 +1,12 @@
 using ClickerWeb.Domain;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ClickerWeb.Infrastructure.Abstractions;
 
 
 namespace ClickerWeb.Infrastructure.DataAccess;
 
-public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
+public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>, IAppDbContext
 {
     public DbSet<ApplicationRole> ApplicationRoles { get; private set; }
 
