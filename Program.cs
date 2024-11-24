@@ -1,8 +1,7 @@
-using ClickerWeb.Initializers;
-using ClickerWeb.Domain;
-using ClickerWeb.Infrastructure.DataAccess;
-using Microsoft.AspNetCore.Identity;
 using ClickerWeb.Infrastructure.Abstractions;
+using ClickerWeb.Infrastructure.DataAccess;
+using ClickerWeb.Infrastructure.Implementations;
+using ClickerWeb.Initializers;
 
 namespace ClickerWeb;
 
@@ -22,32 +21,35 @@ public class Program
         DbContextInitializer.InitializeDbContext(appDbContext);
 
         app.UseRouting();
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseStaticFiles();
         app.UseSwagger();
         app.UseSwaggerUI();
 
         app.MapControllers();
         app.MapDefaultControllerRoute();
-        app.MapHealthChecks("health");
-        
+        app.MapHealthChecks("health-check");
+
         app.Run();
     }
-    
+
     private static void ConfigureServices(IServiceCollection services)
     {
         services.AddHealthChecks();
         services.AddSwaggerGen();
-        
+
         services.AddAutoMapper(typeof(Program).Assembly);
         services.AddMediatR(o => o.RegisterServicesFromAssembly(typeof(Program).Assembly));
-        
-        services.AddAuthentication();
+
+        services.AddAuthentication()
+            .AddCookie(o => o.LoginPath = "/auth/login");
         services.AddAuthorization();
         services.AddControllersWithViews();
 
+        services.AddScoped<ICurrentUserAccessor, CurrentUserAccessor>();
         services.AddScoped<IAppDbContext, AppDbContext>();
 
         IdentityInitializer.AddIdentity(services);

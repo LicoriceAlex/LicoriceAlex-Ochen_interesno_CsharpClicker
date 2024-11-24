@@ -1,8 +1,7 @@
 using ClickerWeb.Domain;
+using ClickerWeb.Infrastructure.Abstractions;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ClickerWeb.Infrastructure.Abstractions;
-
 
 namespace ClickerWeb.Infrastructure.DataAccess;
 
@@ -26,7 +25,7 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, 
 
         builder.Entity<UserBoost>()
             .HasOne(ub => ub.User)
-            .WithMany()
+            .WithMany(u => u.UserBoosts)
             .HasForeignKey(ub => ub.UserId);
 
         builder.Entity<UserBoost>()

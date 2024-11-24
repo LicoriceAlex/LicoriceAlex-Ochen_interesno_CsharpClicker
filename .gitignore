@@ -1,9 +1,3 @@
-bin/
-obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
-
 # The following command works for downloading when using Git for Windows:
 # curl -LOf http://gist.githubusercontent.com/kmorcinek/2710267/raw/.gitignore
 #
@@ -217,7 +211,6 @@ project.lock.json
 
 # Output folder used by Webpack or other FE stuff
 **/node_modules/*
-**/wwwroot/*
 
 # SpecFlow specific
 *.feature.cs
