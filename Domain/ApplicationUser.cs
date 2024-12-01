@@ -8,5 +8,7 @@ public class ApplicationUser : IdentityUser<Guid>
 
     public long RecordScore { get; set; }
 
-    public IEnumerable<UserBoost> UserBoosts { get; set; } = [];
+    public ICollection<UserBoost> UserBoosts { get; set; } = [];
+
+    public byte[] Avatar { get; set; } = [];
 }

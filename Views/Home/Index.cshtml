@@ -4,57 +4,112 @@
     <link href="@Url.Content("~/css/index.css")" rel="stylesheet">
 }
 
-<div class="row">
+<div class="container">
+    <div class="row">
+        <!-- Левая колонка: Информация о пользователе -->
+        <div class="col-3">
+            <div class="m-3">
+                <p class="p-0 m-2">Привет, @Model.User.UserName!</p>
+                <p class="p-0 m-2">Ты собрал <span id="current_score">@Model.User.CurrentScore</span> <img class="orb-img" src="orb.png" /></p>
+                <p class="p-0 m-2">Всего ты собрал <span id="record_score">@Model.User.RecordScore</span> <img class="orb-img" src="orb.png" /></p>
+                <p class="p-0 m-2">С одного удара по противнику ты получаешь <span id="profit_per_click">@Model.User.ProfitPerClick</span> <img class="orb-img" src="orb.png" /></p>
+                <p class="p-0 m-2">Каждую секунду ты получаешь <span id="profit_per_second">@Model.User.ProfitPerSecond</span> <img class="orb-img" src="orb.png" /></p>
+            
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    @if (Model.User.Avatar.Length == 0)
+                    {
+                        <img src="~/anonymous.png" class="rounded-circle" height="100" />
+                    }
+                    else
+                    {
+                        <img src="data:image/png;base64, @Convert.ToBase64String(Model.User.Avatar)" class="rounded-circle" height="100" width="100" />
+                    }
+                    <form asp-action="avatar" asp-controller="user" method="post" enctype="multipart/form-data" class="ms-3">
+                        <input id="avatar-form-control" type="file" class="form-control mt-2" name="avatar" accept="image/*" />
+                        <input id="update-avatar-submit" type="submit" class="btn btn-primary mt-2" value="Обновить аватар" />
+                    </form>
+                </div>
+                <form asp-action="Logout" asp-controller="Auth" class="mt-4">
+                    <input type="submit" class="btn btn-secondary" value="Выйти из аккаунта" />
+                </form></div>
+        </div>
 
-    <div class="col">
-        <div>
-            <h3>Добро пожаловать в колонию, @Model.User.UserName</h3>
-            <h4>У тебя уже накоплено <span id="current_score">@Model.User.CurrentScore</span> кусков руды</h4>
-            <h4>Всего ты добыл <span id="record_score">@Model.User.RecordScore</span> кусков руды</h4>
-            <h4>С одного удара киркой ты добываешь <span id="profit_per_click">@Model.User.ProfitPerClick</span> кусков</h4>
-            <h4>Твои подчиненные ежесекундно добывают <span id="profit_per_second">@Model.User.ProfitPerSecond</span> кусков</h4>
+        <!-- Центральная колонка: Кнопка клика -->
+        <div class="col-4 d-flex justify-content-center mt-5">
+            <button id="clickitem" class="click-item bg-transparent border-0 rounded-circle p-0 position-relative">
+                <img src="orb.png" alt="click item" class="click-item-img" />
+            </button>
+        </div>
+        
+        <div class="col-5">
+            <div class="col-12 m-3 d-flex flex-column flex-wrap boosts-container">
+                @foreach (var boost in Model.Boosts)
+                {
+                    var userBoost = Model.User.UserBoosts.FirstOrDefault(ub => ub.BoostId == boost.Id);
+                    var price = userBoost?.CurrentPrice ?? boost.Price;
+                    var quantity = userBoost?.Quantity ?? 0;
+        
+                    <button class="col-12 d-flex justify-content-center align-items-center boost-button border-0 m-2 rounded shadow-sm d-flex">
+                        <div class="boost-id" hidden>@boost.Id</div>
+                        <div class="col-2 d-flex justify-content-center align-items-center">
+                            <img src="data:image/png;base64, @Convert.ToBase64String(boost.Image)" height="60px" class="mb-2"/>
+                        </div>
+                        <div class="col-3 ">@boost.Title</div>
+                        <div class="col-3 text-center boost-price-string">Цена:
+                            <p class="boost-price">@price</p></div>
+                        <div class="col-2">
+                            Доход:
+                            <p>
+                                @boost.Profit
+                                @if (boost.IsAuto)
+                                {
+                                    <span> в секунду</span>
+                                }
+                            </p>
+                        </div>
+                        <div class="col-2">
+                            Куплено:
+                            <p class="boost-quantity">@quantity</p>
+                        </div>
+                    </button>
+                }
+            </div>
         </div>
     </div>
 
-    <div class="col justify-content-center">
-         <button id="clickitem" class="click-item bg-transparent border-0">
-             <img class="w-50" src="~/ore.png" />
-         </button>
-    </div>
-
-    <div class="col">
-        <form asp-action="Logout" asp-controller="Auth">
-            <input type="submit" class="btn btn-primary" value="Выйти из аккаунта" />
-        </form>
-        <h3>Бусты</h3>
-        <div class="d-flex">
-            @foreach (var boost in Model.Boosts)
-            {
-                var userBoost = Model.User.UserBoosts.FirstOrDefault(ub => ub.BoostId == boost.Id);
-
-                var price = userBoost?.CurrentPrice ?? boost.Price;
-                var quantity = userBoost?.Quantity ?? 0;
-
-                <button class="boost-button border-0 bg-secondary m-3">
-                    <span class="boost-id" hidden>@boost.Id</span>
-                    <h4>@boost.Title</h4>
-                    <img src="data:image/png;base64, @Convert.ToBase64String(boost.Image)" height="100" />
-                    <h5 class="boost-price-string">Цена: <span class="boost-price">@price</span></h5>
-                    <h5>
-                        Доход: @boost.Profit
-                        @if (boost.IsAuto)
-                        {
-                            <span> в секунду</span>
-                        }
-                    </h5>
-                    <h5>
-                        Количество приобретенных бустов: <span class="boost-quantity">@quantity</span>
-                    </h5>
-                </button>
-            }
-        </div>
-    </div>
 </div>
+
+<style>
+    .orb-img {
+        width: 1em;
+        height: 1em;
+        vertical-align: middle;
+    }
+
+    .click-item {
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .click-item:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .click-item:active {
+        transform: scale(0.9);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .click-item-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>
 
 @section scripts {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

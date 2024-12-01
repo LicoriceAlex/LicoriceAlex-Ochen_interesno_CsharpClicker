@@ -16,38 +16,42 @@ public static class DbContextInitializer
         string GetPathToDbFile()
         {
             var applicationFolder = Path.Combine(Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData), "CSharpClicker");
+                Environment.SpecialFolder.LocalApplicationData), "ClickerWeb");
 
             if (!Directory.Exists(applicationFolder))
             {
                 Directory.CreateDirectory(applicationFolder);
             }
 
-            return Path.Combine(applicationFolder, "CSharpClicker.db");
+            return Path.Combine(applicationFolder, "ClickerWeb.db");
         }
     }
 
     public static void InitializeDbContext(AppDbContext appDbContext)
     {
-        const string Boost1 = "Рудокоп";
-        const string Boost2 = "Призрак";
-        const string Boost3 = "Стражник";
-        const string Boost4 = "Маг огня";
-        const string Boost5 = "Рудный барон";
-
+        const string Rebelion = "Ребелион";
+        const string EbonyIvory = "Эбони и Айвори";
+        const string Yamato = "Ямато";
+        const string DevilTrigger = "Дэвил Триггер";
+        const string Dante = "Данте";
+        const string Vergil = "Вергилий";
+        const string Lady = "Леди";
+        
         appDbContext.Database.Migrate();
-
+        
         var existingBoosts = appDbContext.Boosts
             .ToArray();
-
-        AddBoostIfNotExist(Boost1, price: 100, profit: 1);
-        AddBoostIfNotExist(Boost2, price: 500, profit: 15);
-        AddBoostIfNotExist(Boost3, price: 2000, profit: 60, isAuto: true);
-        AddBoostIfNotExist(Boost4, price: 10000, profit: 400);
-        AddBoostIfNotExist(Boost5, price: 100000, profit: 5000, isAuto: true);
-
+        
+        AddBoostIfNotExist(Rebelion, price: 100, profit: 1);
+        AddBoostIfNotExist(EbonyIvory, price: 500, profit: 15);
+        AddBoostIfNotExist(DevilTrigger, price: 2000, profit: 60);
+        AddBoostIfNotExist(Yamato, price: 5000, profit: 100);
+        AddBoostIfNotExist(Dante, price: 10000, profit: 400, isAuto: true);
+        AddBoostIfNotExist(Vergil, price: 100000, profit: 5000, isAuto: true);
+        AddBoostIfNotExist(Lady, price: 1000000, profit: 50000, isAuto: true);
+        
         appDbContext.SaveChanges();
-
+        
         void AddBoostIfNotExist(string name, long price, long profit, bool isAuto = false)
         {
             if (!existingBoosts.Any(eb => eb.Title == name))
@@ -55,9 +59,9 @@ public static class DbContextInitializer
                 var pathToImage = Path.Combine(".", "Resources", "BoostImages", $"{name}.png");
                 using var fileStream = File.OpenRead(pathToImage);
                 using var memoryStream = new MemoryStream();
-
+        
                 fileStream.CopyTo(memoryStream);
-
+        
                 appDbContext.Boosts.Add(new Boost
                 {
                     Title = name,

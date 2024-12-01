@@ -1,4 +1,4 @@
-const threshold = 10;
+﻿const threshold = 10;
 let seconds = 0;
 let clicks = 0;
 const currentScoreElement = document.getElementById("current_score");
@@ -10,9 +10,31 @@ let recordScore = Number(recordScoreElement.innerText);
 let profitPerSecond = Number(profitPerSecondElement.innerText);
 let profitPerClick = Number(profitPerClickElement.innerText);
 
+const enemies = [
+    { score: 0, image: "/enemies/enemy1.jpg" },
+    { score: 100, image: "/enemies/enemy2.jpg" },
+    { score: 500, image: "/enemies/enemy3.jpg" },
+    { score: 1000, image: "/enemies/enemy4.jpg" },
+    { score: 5000, image: "/enemies/enemy5.jpg" },
+    { score: 10000, image: "/enemies/enemy6.jpg" },
+];
+
+function getCurrentEnemyImage(score) {
+    let currentEnemy = enemies[0].image;
+    for (let i = 0; i < enemies.length; i++) {
+        if (score >= enemies[i].score) {
+            currentEnemy = enemies[i].image;
+        } else {
+            break;
+        }
+    }
+    return currentEnemy;
+}
 
 $(document).ready(function () {
     const clickitem = document.getElementById("clickitem");
+    const clickItemImage = document.querySelector("#clickitem img");
+    clickItemImage.src = getCurrentEnemyImage(recordScore);
 
     clickitem.onclick = click;
     setInterval(addSecond, 1000)
@@ -24,6 +46,11 @@ $(document).ready(function () {
 
         boostButton.onclick = () => boostButtonClick(boostButton);
     }
+
+    const avatarFormControlInput = document.getElementById('avatar-form-control');
+    const updateAvatarSubmitButton = document.getElementById('update-avatar-submit');
+
+    avatarFormControlInput.onchange = () => updateAvatarSubmitButton.hidden = false;
 
     toggleBoostsAvailability();
 })
@@ -101,6 +128,10 @@ function updateUiScore() {
     recordScoreElement.innerText = recordScore;
     profitPerClickElement.innerText = profitPerClick;
     profitPerSecondElement.innerText = profitPerSecond;
+
+    const clickItemImage = document.querySelector("#clickitem img");
+    const newEnemyImage = getCurrentEnemyImage(recordScore);
+    clickItemImage.src = newEnemyImage;
 
     toggleBoostsAvailability();
 }

@@ -53,6 +53,10 @@ namespace ClickerWeb.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte[]>("Avatar")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("TEXT");
@@ -149,9 +153,6 @@ namespace ClickerWeb.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ApplicationUserId")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("BoostId")
                         .HasColumnType("INTEGER");
 
@@ -165,8 +166,6 @@ namespace ClickerWeb.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("BoostId");
 
@@ -276,10 +275,6 @@ namespace ClickerWeb.Migrations
 
             modelBuilder.Entity("ClickerWeb.Domain.UserBoost", b =>
                 {
-                    b.HasOne("ClickerWeb.Domain.ApplicationUser", null)
-                        .WithMany("UserBoosts")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("ClickerWeb.Domain.Boost", "Boost")
                         .WithMany()
                         .HasForeignKey("BoostId")
@@ -287,7 +282,7 @@ namespace ClickerWeb.Migrations
                         .IsRequired();
 
                     b.HasOne("ClickerWeb.Domain.ApplicationUser", "User")
-                        .WithMany()
+                        .WithMany("UserBoosts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
