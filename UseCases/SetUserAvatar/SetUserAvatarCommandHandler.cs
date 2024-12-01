@@ -1,6 +1,7 @@
 using ClickerWeb.Infrastructure.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace ClickerWeb.UseCases.SetUserAvatar;
 
@@ -17,6 +18,10 @@ public class SetUserAvatarCommandHandler : IRequestHandler<SetUserAvatarCommand,
 
     public async Task<Unit> Handle(SetUserAvatarCommand request, CancellationToken cancellationToken)
     {
+        if (request.Avatar == null || request.Avatar.Length == 0)
+        {
+            throw new ValidationException("Файл аватара не был отправлен или пустой.");
+        }
         var userId = currentUserAccessor.GetCurrentUserId();
 
         var user = await appDbContext.ApplicationUsers.FirstAsync(user => user.Id == userId, cancellationToken);

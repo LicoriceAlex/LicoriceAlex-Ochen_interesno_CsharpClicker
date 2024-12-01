@@ -32,6 +32,12 @@ public class Program
         app.MapControllers();
         app.MapDefaultControllerRoute();
         app.MapHealthChecks("health-check");
+        
+        app.MapGet("/Account/Login", context =>
+        {
+            context.Response.Redirect("/auth/login");
+            return Task.CompletedTask;
+        });
 
         app.Run();
     }

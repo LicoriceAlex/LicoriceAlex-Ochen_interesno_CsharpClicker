@@ -176,11 +176,12 @@ function toggleBoostsAvailability() {
         const boostPriceElement = boostButton.getElementsByClassName("boost-price")[0];
         const boostPrice = Number(boostPriceElement.innerText);
 
-        if (boostPrice > currentScore) {
-            boostButton.disabled = true;
-            continue;
-        }
+        
 
-        boostButton.disabled = false;
+        if (boostPrice > currentScore) {
+            boostButton.setAttribute('disabled', 'true');
+        } else {
+            boostButton.removeAttribute('disabled');
+        }
     }
 }

@@ -1,3 +1,125 @@
 ﻿#click-item, .boost-button:active {
     opacity: 0.7;
 }
+
+.boost-button{
+    background-color: #f8f9fa;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.boost-button:hover {
+    background-color: #e9ecef;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.boost-button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.boost-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.boost-price,
+.boost-profit,
+.boost-quantity {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.boost-price,
+.boost-quantity {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.user-info-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.user-info-text {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.highlight-text {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.highlight-text:hover {
+    transform: scale(1.1);
+}
+
+.boost-button:disabled,
+.boost-button:disabled * {
+    background-color: #e0e0e0;
+    color: #a0a0a0;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.boost-button:disabled img {
+    opacity: 0.3;
+}
+
+.boost-button:disabled:hover {
+    background-color: #e0e0e0;
+    box-shadow: none;
+    transform: none;
+}
+
+.boost-button:disabled:active {
+    transform: none;
+    box-shadow: none;
+}
+
+.orb-img {
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+    margin-left: 5px;
+}
+
+.avatar-img {
+    width: 100px; 
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.click-item {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.click-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.click-item:active {
+    transform: scale(1);
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.click-item-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}

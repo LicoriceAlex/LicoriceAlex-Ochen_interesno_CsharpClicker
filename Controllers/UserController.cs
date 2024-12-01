@@ -1,10 +1,14 @@
 using ClickerWeb.UseCases.GetLeaderboard;
 using ClickerWeb.UseCases.SetUserAvatar;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using ClickerWeb.ViewModels;
 
 namespace ClickerWeb.Controllers;
 
+[Authorize]
 [Route("user")]
 public class UserController : Controller
 {
@@ -18,9 +22,15 @@ public class UserController : Controller
     [HttpPost("avatar")]
     public async Task<IActionResult> SetAvatar(SetUserAvatarCommand command)
     {
-        await mediator.Send(command);
-
-        return RedirectToAction("Index", "Home");
+        try
+        {
+            await mediator.Send(command);
+            return RedirectToAction("Index", "Home");
+        }
+        catch (ValidationException ex)
+        {
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     [HttpGet("leaderboard")]

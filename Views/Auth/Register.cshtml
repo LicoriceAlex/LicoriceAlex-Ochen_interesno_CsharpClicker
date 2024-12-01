@@ -1,17 +1,33 @@
 ﻿@model AuthViewModel
 
-<div class="d-flex justify-content-center align-items-center vh-100">
-    <div class="bg-light flex-column p-5">
-        <form class="d-flex flex-column align-items-center" asp-action="Register" asp-controller="Auth" method="post">
-            <h4>Регистрация</h4>
-            <label>Имя пользователя</label>
-            <input class="form-control mx-auto m-2" type="text" asp-for="@Model.UserName" maxlength="30" />
-            <label>Пароль</label>
-            <input class="form-control mx-auto m-2" type="password" asp-for="@Model.Password" />
-            <input class="btn btn-primary mx-auto" type="submit" value="Зарегистрироваться" />
-            <div asp-validation-summary="All"></div>
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+    <div class="bg-white rounded shadow p-4" style="width: 100%; max-width: 400px;">
+        <form class="d-flex flex-column" asp-action="Register" asp-controller="Auth" method="post">
+            <h4 class="text-center mb-4 text-primary">Регистрация</h4>
+            
+            <div class="form-group mb-3">
+                <label for="UserName" class="form-label">Имя пользователя</label>
+                <input id="UserName" class="form-control" type="text" asp-for="@Model.UserName" maxlength="30" placeholder="Введите имя пользователя" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="Password" class="form-label">Пароль</label>
+                <input id="Password" class="form-control" type="password" asp-for="@Model.Password" placeholder="Введите пароль" />
+            </div>
+            
+            <div class="form-group mb-3">
+                <input class="btn btn-primary w-100" type="submit" value="Зарегистрироваться" />
+            </div>
+            
+            <div class="form-text text-center text-danger mb-3">
+                <div asp-validation-summary="All"></div>
+            </div>
         </form>
 
-        <a asp-action="Login" asp-controller="Auth">Войти в аккаунт</a>
+        <div class="text-center">
+            <a class="text-decoration-none text-primary" asp-action="Login" asp-controller="Auth">
+                Войти в аккаунт
+            </a>
+        </div>
     </div>
 </div>

@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using ClickerWeb.ViewModels;
 using System.ComponentModel.DataAnnotations;
 
-
-
 namespace ClickerWeb.Controllers;
 
 [Route("auth")]
@@ -26,6 +24,7 @@ public class AuthController : Controller
         try
         {
             await mediator.Send(command);
+            return RedirectToAction("Login");
         }
         catch (ValidationException ex)
         {
