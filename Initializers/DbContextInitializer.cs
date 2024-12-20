@@ -43,12 +43,14 @@ public static class DbContextInitializer
             .ToArray();
         
         AddBoostIfNotExist(Rebelion, price: 100, profit: 1);
-        AddBoostIfNotExist(EbonyIvory, price: 500, profit: 15);
-        AddBoostIfNotExist(DevilTrigger, price: 2000, profit: 60);
-        AddBoostIfNotExist(Yamato, price: 5000, profit: 100);
-        AddBoostIfNotExist(Dante, price: 10000, profit: 400, isAuto: true);
-        AddBoostIfNotExist(Vergil, price: 100000, profit: 5000, isAuto: true);
+        AddBoostIfNotExist(EbonyIvory, price: 1000, profit: 10);
+        AddBoostIfNotExist(DevilTrigger, price: 5000, profit: 50);
+        AddBoostIfNotExist(Yamato, price: 20000, profit: 200);
+        AddBoostIfNotExist(Dante, price: 50000, profit: 1000, isAuto: true);
+        AddBoostIfNotExist(Vergil, price: 500000, profit: 5000, isAuto: true);
         AddBoostIfNotExist(Lady, price: 1000000, profit: 50000, isAuto: true);
+        
+        AddRandomUsers();
         
         appDbContext.SaveChanges();
         
@@ -69,6 +71,34 @@ public static class DbContextInitializer
                     Profit = profit,
                     IsAuto = isAuto,
                     Image = memoryStream.ToArray(),
+                });
+            }
+        }
+        void AddRandomUsers()
+        {
+            if (appDbContext.Users.Count() > 100)
+            {
+                return;
+            }
+            const int limit = 2000;
+            const int asciLimit = 126;
+            const int symbolsLimit = 15;
+            const int symbolsStart = 5;
+            var random = new Random();
+            for (var i = 0; i < 200; i++)
+            {
+                var score = random.Next(limit);
+                var symbolsCount = random.Next(symbolsStart, symbolsLimit);
+                var userName = string.Empty;
+                for (var j = 0; j < symbolsCount; j++)
+                {
+                    var character = random.Next(asciLimit);
+                    userName += char.ConvertFromUtf32(character);
+                }
+                appDbContext.Users.Add(new ApplicationUser
+                {
+                    UserName = userName,
+                    RecordScore = score,
                 });
             }
         }

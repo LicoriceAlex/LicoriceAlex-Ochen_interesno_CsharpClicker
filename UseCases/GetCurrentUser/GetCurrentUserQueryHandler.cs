@@ -27,8 +27,8 @@ public class GetCurrentUserQueryHandler : IRequestHandler<GetCurrentUserQuery, U
         var user = await appDbContext.ApplicationUsers
             .Include(user => user.UserBoosts)
             .ThenInclude(ub => ub.Boost)
-            .FirstAsync(user => user.Id == userId);
-
+            .FirstOrDefaultAsync(user => user.Id == userId);
+        
         var userDto = mapper.Map<UserDto>(user);
 
         userDto.ProfitPerClick = user.UserBoosts.GetProfit();

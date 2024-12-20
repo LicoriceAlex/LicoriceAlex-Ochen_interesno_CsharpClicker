@@ -1,4 +1,7 @@
 ﻿@model IndexViewModel
+@{
+    ViewBag.Title = "Главная";
+}
 
 @section styles {
     <link href="@Url.Content("~/css/index.css")" rel="stylesheet">
@@ -34,7 +37,7 @@
                 </form>
                 <form asp-action="Logout" asp-controller="Auth" class="mt-4">
                     <input type="submit" class="btn btn-secondary" value="Выйти из аккаунта" />
-                </form> 
+                </form>
                 </div>
         </div>
         

@@ -1,5 +1,6 @@
 using ClickerWeb.UseCases.GetLeaderboard;
 using ClickerWeb.UseCases.SetUserAvatar;
+using ClickerWeb.UseCases.GetUserSettings;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,10 +35,17 @@ public class UserController : Controller
     }
 
     [HttpGet("leaderboard")]
-    public async Task<IActionResult> Leaderboard()
+    public async Task<IActionResult> Leaderboard(GetLeaderboardQuery query)
     {
-        var leaderboard = await mediator.Send(new GetLeaderboardQuery());
+        var leaderboard = await mediator.Send(query);
 
         return View(leaderboard);
     }
+
+    [HttpGet("settings")]
+     public async Task<IActionResult> Settings()
+     {
+         var userSettings = await mediator.Send(new GetCurrentUserSettingsQuery());
+         return View(userSettings);
+     }
 }

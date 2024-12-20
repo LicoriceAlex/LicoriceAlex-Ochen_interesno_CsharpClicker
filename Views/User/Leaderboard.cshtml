@@ -1,5 +1,9 @@
 @using ClickerWeb.UseCases.GetLeaderboard;
+@using ClickerWeb.Domain;
 @model LeaderboardDto
+@{
+    ViewBag.Title = "Таблица лидеров";
+}
 
 <div class="container my-4">
     <h2 class="text-center mb-4">Таблица лидеров</h2>
@@ -14,7 +18,7 @@
         <tbody>
         @for (var i = 0; i < Model.Users.Count; i++)
         {
-            var place = i + 1;
+            var place = (Model.PageInfo.Page - 1) * DomainConstants.PageSize + i + 1;
             var user = Model.Users.ElementAt(i);
             <tr>
                 <th scope="row">@place</th>
@@ -34,4 +38,102 @@
         }
         </tbody>
     </table>
+    <div class="d-flex justify-content-center my-4">
+        <nav aria-label="Pagination">
+            <ul class="pagination">
+                @if (Model.PageInfo.Page > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Leaderboard" asp-controller="User" asp-route-page="@(Model.PageInfo.Page - 1)" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                }
+    
+                @if (Model.PageInfo.Total <= 10)
+                {
+                    for (var i = 1; i <= Model.PageInfo.Total; i++)
+                    {
+                        if (i == Model.PageInfo.Page)
+                        {
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">@i</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Leaderboard" asp-controller="User" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+                    }
+                }
+                else
+                {
+                    const int HalfPageCollectionSize = 5;
+    
+                    var pagesFromLeft = Model.PageInfo.Page - 1;
+                    var pagesFromRight = Model.PageInfo.Total - Model.PageInfo.Page;
+    
+                    var availablePagesFromLeft = pagesFromLeft >= HalfPageCollectionSize ? HalfPageCollectionSize : pagesFromLeft;
+                    var availablePagesFromRight = pagesFromRight >= HalfPageCollectionSize ? HalfPageCollectionSize : pagesFromRight;
+    
+                    var pageStart = Math.Max(1, Model.PageInfo.Page - availablePagesFromLeft);
+                    var pageEnd = Math.Min(Model.PageInfo.Total, Model.PageInfo.Page + availablePagesFromRight);
+    
+                    if (pageStart > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Leaderboard" asp-controller="User" asp-route-page="1">1</a>
+                        </li>
+                        @if (pageStart > 2)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                    }
+    
+                    for (var i = pageStart; i <= pageEnd; i++)
+                    {
+                        if (i == Model.PageInfo.Page)
+                        {
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">@i</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Leaderboard" asp-controller="User" asp-route-page="@i">@i</a>
+                            </li>
+                        }
+                    }
+    
+                    if (pageEnd < Model.PageInfo.Total)
+                    {
+                        @if (pageEnd < Model.PageInfo.Total - 1)
+                        {
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        }
+                        <li class="page-item">
+                            <a class="page-link" asp-action="Leaderboard" asp-controller="User" asp-route-page="@(Model.PageInfo.Total)">@Model.PageInfo.Total</a>
+                        </li>
+                    }
+                }
+    
+                @if (Model.PageInfo.Page < Model.PageInfo.Total)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Leaderboard" asp-controller="User" asp-route-page="@(Model.PageInfo.Page + 1)" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+    <div class="d-flex justify-content-center">
+        <form asp-action="Index" asp-controller="Home" method="get" class="mt-1">
+            <input type="submit" class="btn btn-primary" value="На главную" />
+        </form>
+    </div>
 </div>
