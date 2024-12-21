@@ -16,9 +16,13 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Unit>
 
     public async Task<Unit> Handle(RegisterCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.UserName) || string.IsNullOrWhiteSpace(request.Password))
+        {
+            throw new ValidationException("Введите имя пользователя и пароль");
+        }
         if (userManager.Users.Any(u => u.UserName == request.UserName))
         {
-            throw new ValidationException("Such user already exists.");
+            throw new ValidationException("Пользователь с таким именем уже существует");
         }
 
         var user = new ApplicationUser
@@ -30,7 +34,8 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, Unit>
 
         if (!result.Succeeded)
         {
-            var errorString = string.Join(Environment.NewLine, result.Errors);
+            var errorDescriptions = result.Errors.Select(e => e.Description);
+            var errorString = string.Join(Environment.NewLine, errorDescriptions);
             throw new ValidationException(errorString);
         }
 

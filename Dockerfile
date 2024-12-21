@@ -1,5 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+ARG APP_UID=1000
+ARG APP_GID=1000
+RUN mkdir -p /app && chown $APP_UID:$APP_GID /app
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
@@ -20,4 +22,5 @@ RUN dotnet publish "ClickerWeb.csproj" -c $BUILD_CONFIGURATION -o /app/publish /
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY Resources /app/Resources
 ENTRYPOINT ["dotnet", "ClickerWeb.dll"]

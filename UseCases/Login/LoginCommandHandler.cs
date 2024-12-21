@@ -18,11 +18,15 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Unit>
 
     public async Task<Unit> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.UserName) || string.IsNullOrWhiteSpace(request.Password))
+        {
+            throw new ValidationException("Введите имя пользователя и пароль");
+        }
         var user = await userManager.FindByNameAsync(request.UserName);
 
         if (user == null)
         {
-            throw new ValidationException("Such user does not exists");
+            throw new ValidationException("Пользователь не найден");
         }
 
         request.ToString();
@@ -31,7 +35,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, Unit>
 
         if (!result.Succeeded)
         {
-            throw new ValidationException("Password or username is not correct.");
+            throw new ValidationException("Неверный пароль");
         }
 
         return Unit.Value;
